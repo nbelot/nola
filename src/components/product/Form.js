@@ -8,7 +8,6 @@ const form = props => {
     const [productId] = useState(props.match.params.id)
 
     useEffect(() => {
-        console.log('[Form] - Loading product')
         if(productId) {
             axios.get('/products/'+productId+'.json').then(response => {
                 setName(response.data.name)
@@ -26,15 +25,29 @@ const form = props => {
     }
 
     const saveProductHandler = () => {
-        axios.post('/products.json', {
-            id: productId,
-            name: name,
-            price: price
-        }).then(response => {
-            props.history.push('/product/'+response.data.name);
-        }).catch(err => {
-            console.log(err);
-        });
+        const url = productId ? '/products/'+productId+'.json' : '/products.json';
+
+        if(productId) {
+            axios.put(url, {
+                id: productId,
+                name: name,
+                price: price
+            }).then(response => {
+                props.history.push('/product/' + response.data.id);
+            }).catch(err => {
+                console.log(err);
+            });
+        } else {
+            axios.post(url, {
+                name: name,
+                price: price
+            }).then(response => {
+                props.history.push('/product/'+response.data.name);
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+
     }
 
     return (
