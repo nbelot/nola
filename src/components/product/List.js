@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios'
+import axios from '../../axios'
 
 const list  = props => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        axios.get('https://nola-85383.firebaseio.com/products.json').then(response => {
+        axios.get('/products.json').then(response => {
             const productsData = [];
 
             for(const key in response.data) {
@@ -19,9 +19,6 @@ const list  = props => {
 
             setProducts(productsData)
         });
-        return () => {
-            console.log('Cleanup');
-        };
     }, []);
 
     const viewProductHandler = (id) => {
@@ -33,7 +30,7 @@ const list  = props => {
     }
 
     const deleteProductHandler = (id) => {
-        axios.delete('https://nola-85383.firebaseio.com/products/'+id+'.json').then(response => {
+        axios.delete('/products/'+id+'.json').then(() => {
             const updatedProducts = products.filter(product => product.id !== id);
 
             setProducts(updatedProducts);

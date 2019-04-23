@@ -1,24 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import axios from '../../axios';
+import Input from '../UI/Input';
 
 const form = props => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
-    const [saved, setSaved] = useState(false);
-    const [productId, setProductId] = useState(props.match.params.id)
+    const [productId] = useState(props.match.params.id)
 
     useEffect(() => {
+        console.log('[Form] - Loading product')
         if(productId) {
-            axios.get('https://nola-85383.firebaseio.com/products/'+productId+'.json').then(response => {
+            axios.get('/products/'+productId+'.json').then(response => {
                 setName(response.data.name)
                 setPrice(response.data.price)
             });
         }
-
-        return () => {
-            console.log('Cleanup');
-        };
     }, []);
 
     const nameInputChangeHandler = event => {
@@ -30,7 +26,7 @@ const form = props => {
     }
 
     const saveProductHandler = () => {
-        axios.post('https://nola-85383.firebaseio.com/products.json', {
+        axios.post('/products.json', {
             id: productId,
             name: name,
             price: price
@@ -45,10 +41,10 @@ const form = props => {
         <React.Fragment>
             <h1>Product Form</h1>
             <div>
-                <input placeholder="Name" onChange={nameInputChangeHandler} value={name}/>
+                <Input eleType="input" placeholder="Name" changed={(event) => nameInputChangeHandler(event)} value={name} required={true}></Input>
             </div>
             <div>
-                <input placeholder="Price" type="number" onChange={priceInputChangeHandler} value={price}/>
+                <Input eleType="input" placeholder="Price" changed={(event) => priceInputChangeHandler(event)} value={price} required={true}></Input>
             </div>
             <div>
                 <button onClick={saveProductHandler}>Save</button>

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import ProductForm from './components/product/form';
-import ProductList from './components/product/list';
-import ProductView from './components/product/view';
+import ProductForm from './components/product/Form';
+import ProductList from './components/product/List';
+import ProductView from './components/product/View';
 import { BrowserRouter } from 'react-router-dom';
 import { Route, NavLink } from 'react-router-dom';
 
