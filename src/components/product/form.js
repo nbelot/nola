@@ -1,10 +1,25 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
 const form = props => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
+    const [saved, setSaved] = useState(false);
+    const [productId, setProductId] = useState(props.match.params.id)
+
+    useEffect(() => {
+        if(productId) {
+            axios.get('https://nola-85383.firebaseio.com/products/'+productId+'.json').then(response => {
+                setName(response.data.name)
+                setPrice(response.data.price)
+            });
+        }
+
+        return () => {
+            console.log('Cleanup');
+        };
+    }, []);
 
     const nameInputChangeHandler = event => {
         setName(event.target.value);
@@ -14,15 +29,13 @@ const form = props => {
         setPrice(event.target.value);
     }
 
-    const redirectSuccessHandler = () => {
-    }
-
     const saveProductHandler = () => {
         axios.post('https://nola-85383.firebaseio.com/products.json', {
+            id: productId,
             name: name,
             price: price
         }).then(response => {
-            redirectSuccessHandler();
+            props.history.push('/product/'+response.data.name);
         }).catch(err => {
             console.log(err);
         });
